@@ -54,7 +54,7 @@ import (
 
 const timeFormat = "2006-01-02T15:04:05.000000000Z07:00"
 const encryptionSuffix = ".aes256"
-const resumableUploadMinSize = 64 * 1024 * 1024
+const resumableUploadMinSize = 512 * 1024 * 1024
 const passphraseEnvironmentVariable = "SKICKA_PASSPHRASE"
 
 ///////////////////////////////////////////////////////////////////////////
