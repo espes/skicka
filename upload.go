@@ -240,11 +240,11 @@ func uploadFileContents(localPath string, driveFile *gdrive.File, encrypt bool,
 			uploadReader = countingReader
 		}
 
-		if length >= resumableUploadMinSize {
-			err = gd.UploadFileContentsResumable(driveFile, uploadReader, length)
-		} else {
+		// if length >= resumableUploadMinSize {
+		// 	err = gd.UploadFileContentsResumable(driveFile, uploadReader, length)
+		// } else {
 			err = gd.UploadFileContents(driveFile, uploadReader, length, try)
-		}
+		// }
 		atomic.AddInt64(&stats.DiskReadBytes, countingReader.bytesRead)
 
 		if err == nil {
@@ -362,21 +362,21 @@ func syncHierarchyUp(localPath string, driveRoot string, encrypt bool, trustTime
 	// protocol using a single thread; more threads here doesn't generally
 	// help improve bandwidth utilizaiton and seems to make rate limit
 	// errors from the Drive API more frequent...
-	for ; uploadBackIndex >= 0; uploadBackIndex-- {
-		if fileMappings[uploadBackIndex].LocalFileInfo.Size() < resumableUploadMinSize {
-			break
-		}
+	// for ; uploadBackIndex >= 0; uploadBackIndex-- {
+	// 	if fileMappings[uploadBackIndex].LocalFileInfo.Size() < resumableUploadMinSize {
+	// 		break
+	// 	}
 
-		fm := fileMappings[uploadBackIndex]
-		if fm.LocalFileInfo.IsDir() {
-			continue
-		}
+	// 	fm := fileMappings[uploadBackIndex]
+	// 	if fm.LocalFileInfo.IsDir() {
+	// 		continue
+	// 	}
 
-		if err := syncFileUp(fm.LocalPath, fm.LocalFileInfo, fm.DrivePath, encrypt,
-			fileProgressBar); err != nil {
-			addErrorAndPrintMessage(&nUploadErrors, fm.LocalPath, err)
-		}
-	}
+	// 	if err := syncFileUp(fm.LocalPath, fm.LocalFileInfo, fm.DrivePath, encrypt,
+	// 		fileProgressBar); err != nil {
+	// 		addErrorAndPrintMessage(&nUploadErrors, fm.LocalPath, err)
+	// 	}
+	// }
 
 	// Upload worker threads send a value over this channel when
 	// they're done; the code that launches them waits for all of them
@@ -436,6 +436,7 @@ func syncHierarchyUp(localPath string, driveRoot string, encrypt bool, trustTime
 	for i := 0; i < nWorkers; i++ {
 		// All workers except the first one start from the front of
 		// the array.
+		fmt.Printf("ping\n");
 		go uploadWorker(i != 0)
 	}
 
