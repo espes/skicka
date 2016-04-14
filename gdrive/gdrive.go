@@ -1072,18 +1072,18 @@ func convertProplist(p []Property) []*drive.Property {
 // represents the file in Drive.
 func (gd *GDrive) CreateFile(name string, parent *File,
 	modTime time.Time, proplist []Property) (*File, error) {
-	return gd.createFileOrFolder(name, parent, modTime, proplist,
+	return gd.CreateFileOrFolder(name, parent, modTime, proplist,
 		"application/octet-stream")
 }
 
 // CreateFolder creates a new folder in Google Drive with given name.
 func (gd *GDrive) CreateFolder(name string, parent *File,
 	modTime time.Time, proplist []Property) (*File, error) {
-	return gd.createFileOrFolder(name, parent, modTime, proplist,
+	return gd.CreateFileOrFolder(name, parent, modTime, proplist,
 		"application/vnd.google-apps.folder")
 }
 
-func (gd *GDrive) createFileOrFolder(name string, parent *File,
+func (gd *GDrive) CreateFileOrFolder(name string, parent *File,
 	modTime time.Time, proplist []Property, mimeType string) (*File, error) {
 	path := canonicalPath(filepath.Join(parent.Path, name))
 

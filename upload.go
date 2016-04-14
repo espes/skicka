@@ -34,6 +34,7 @@ import (
 	"sync"
 	"sync/atomic"
 	"time"
+	"strings"
 )
 
 func uploadUsage() {
@@ -175,13 +176,22 @@ func syncFileUp(localPath string, stat os.FileInfo, drivePath string, encrypt bo
 			}
 			proplist = append(proplist, gdrive.Property{Key: "Permissions",
 				Value: fmt.Sprintf("%#o", stat.Mode()&os.ModePerm)})
+
+			mimeType := "application/octet-stream"
+			if strings.HasSuffix(localPath, ".ts") {
+				mimeType = "video/MP2T"
+			}
+
 			// We explicitly set the modification time of the file to the
 			// start of the Unix epoch, so that if the upload fails
 			// partway through, then we won't later be confused about which
 			// file is the correct one from having local and Drive copies
 			// with the same time but different contents.
-			driveFile, err = gd.CreateFile(baseName, parentFolder, time.Unix(0, 0),
-				proplist)
+			// driveFile, err = gd.CreateFile(baseName, parentFolder, time.Unix(0, 0),
+			// 	proplist)
+
+			driveFile, err = gd.CreateFileOrFolder(baseName, parentFolder, time.Unix(0, 0),
+				proplist, mimeType)
 
 			if err != nil {
 				return err
